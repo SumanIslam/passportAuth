@@ -14,9 +14,12 @@ const config = {
   MONGO_URI: process.env.MONGO_URI,
 }
 
-// views
+// views (ejs)
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
+
+// bodyParser
+app.use(express.urlencoded({ extended: true }));
 
 // connect mongodb
 mongoose.connect(config.MONGO_URI, () => {
