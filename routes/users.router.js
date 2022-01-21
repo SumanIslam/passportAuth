@@ -48,8 +48,16 @@ userRouter.post('/register', async (req, res) => {
         email,
         password
       }
-      await saveUser(newUser);
-      res.redirect('/users/login');
+
+      try {
+        await saveUser(newUser, req, res);
+        req.flash('success_msg', 'You are registered successfully');
+        res.redirect('/users/login');
+      } catch(err) {
+        res.redirect('/users/login');
+        req.flash('error_msg', 'Registration Failed');
+      }
+      
     }
   }
 })
