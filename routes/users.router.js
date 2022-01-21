@@ -1,6 +1,7 @@
 const express = require('express');
 
 const userModel = require('../models/user-model/user.mongo');
+const { saveUser } = require('../models/user-model/users.model');
 
 const userRouter = express.Router();
 
@@ -47,8 +48,8 @@ userRouter.post('/register', async (req, res) => {
         email,
         password
       }
-      await userModel.create(newUser);
-      res.send('pass')
+      await saveUser(newUser);
+      res.redirect('/users/login');
     }
   }
 })
