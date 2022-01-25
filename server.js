@@ -6,8 +6,10 @@ const session = require('express-session');
 const passport = require('passport');
 
 const userRouter = require('./routes/users.router');
-
 const passportSetup = require('./services/passport-setup');
+const { isUserAuthenticated } = require('./services/auth');
+
+
 require('dotenv').config();
 
 const app = express();
@@ -60,8 +62,7 @@ app.get('/', (req, res) => {
 });
 
 // dashboard route
-app.get('/dashboard', (req, res) => {
-  console.log(req.user);
+app.get('/dashboard', isUserAuthenticated, (req, res) => {
   res.render('dashboard', {user: req.user})
 })
 
