@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-const res = require('express/lib/response');
 const userModel = require('./user.mongo');
 
 async function saveUser(newUser) {
@@ -18,6 +17,15 @@ async function saveUser(newUser) {
   }
 };
 
+async function getUser(id) {
+  try{
+    return await userModel.findById(id);
+  } catch(err) {
+    console.log(`Couldn't get user: ${err.message}`);
+  }
+}
+
 module.exports = {
   saveUser,
+  getUser,
 }

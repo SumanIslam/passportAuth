@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 
 const userModel = require('../models/user-model/user.mongo');
 const { saveUser } = require('../models/user-model/users.model');
@@ -7,6 +8,16 @@ const userRouter = express.Router();
 
 // route to login page
 userRouter.get('/login', (req, res) => res.render('login'));
+
+userRouter.post('/login',
+  passport.authenticate('local', {
+    failureRedirect: '/users/login',
+    successRedirect: '/dashboard',
+    failureFlash: true,
+  }),(req, res) => {
+    res.send('hey')
+  }
+);
 
 // route to register page
 userRouter.get('/register', (req, res) => res.render('register'));
@@ -60,6 +71,12 @@ userRouter.post('/register', async (req, res) => {
       
     }
   }
+});
+
+userRouter.get('/logout', (req, res) => {
+  req.logout();
+  req.flash('success_msg', 'You are successfully logged out');
+  res.redirect('/users/login');
 })
 
 module.exports = userRouter;

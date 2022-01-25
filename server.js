@@ -3,9 +3,11 @@ const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('passport');
 
 const userRouter = require('./routes/users.router');
 
+const passportSetup = require('./services/passport-setup');
 require('dotenv').config();
 
 const app = express();
@@ -30,6 +32,9 @@ app.use(session({
   saveUninitialized: true,
 }))
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 // connect flash
 app.use(flash());
 
@@ -37,6 +42,7 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
   next();
 })
 
@@ -48,9 +54,16 @@ mongoose.connect(config.MONGO_URI, () => {
 // routes
 app.use('/users', userRouter);
 
+// welcome route
 app.get('/', (req, res) => {
   res.render('welcome');
 });
+
+// dashboard route
+app.get('/dashboard', (req, res) => {
+  console.log(req.user);
+  res.render('dashboard', {user: req.user})
+})
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}...`);
